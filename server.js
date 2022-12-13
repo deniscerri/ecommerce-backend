@@ -31,14 +31,16 @@ const isAuth = (req, res, next) => {
 }
 
 app.post('/login', async (req, res) => {
-    var {username, password} = req.body
+    var {email, password} = req.body
     try {
-        let user = await pgPool.query(`Select * from users where email = '${username}' or username = '${username}'`)
+        let user = await pgPool.query(`Select * from users where email = '${email}'`)
         if (user.rows.length == 0) return res.status(404).send("User not found")
+        user = user.rows[0]
 
-        const isPasswordMatch = await bcrypt.compare(password, user.rows[0].password)
+        const isPasswordMatch = await bcrypt.compare(password, user.password)
         if (!isPasswordMatch) return res.status(403).send('Wrong Password')
         req.session.isAuth = true
+        req.session.user = (({password, ...u}) => u)(user) //remove password from the object
         return res.status(200).send('Welcome')
     } catch (error) {
         res.status(500).json(error.message)
@@ -47,30 +49,34 @@ app.post('/login', async (req, res) => {
 
 app.post('/logout', async (req, res) => {
     req.session.destroy((err) => {
-        if (err) res.status(500).send(err.message)
+        if (err) return res.status(500).send(err.message)
         res.status(200).send("Logged Out")
     })
 })
 
 app.post("/register", async (req, res)=>{
-    var {username, email, password} = req.body
-    if (username == undefined || email == undefined || password == undefined) return res.status(500).send("Impartial Data")
+    var {name, surname, email, password} = req.body
+    if (name == undefined || surname == undefined || email == undefined || password == undefined) return res.status(500).send("Impartial Data")
     try {
         password = await bcrypt.hash(password, 12)
-        let user = await pgPool.query(`Select * from users where email = '${email}' or username = '${username}'`)
-        if (user.rows.length > 0) {
-            if (user.rows[0].username === username) return res.status(409).send('User already Exists with this username')
-            else return res.status(409).send('User already Exists with this email')
-        }
-        await pgPool.query(`Insert into users (username, email, password) values ('${username}', '${email}', '${password}')`)
+        let user = await pgPool.query(`Select * from users where email = '${email}'`)
+        if (user.rows.length > 0) return res.status(409).send('User already Exists with this email')
+
+        await pgPool.query(`Insert into users (name, surname, email, password) values ('${name}', '${surname}', '${email}', '${password}')`)
         return res.status(201).send('User Created')
     } catch (error) {
         res.status(500).json(error.message)
     }
 })
 
-app.get("/dashboard", isAuth, (req, res)=> {
-    res.send("dashboard")
+app.get("/dashboard", isAuth, async (req, res)=> {
+    try {
+        let user = await pgPool.query(`Select * from users where user_id = '${req.session.user.user_id}'`)
+        if (user.rows.length == 0) throw {message: "Error finding user info"}
+        return res.status(200).json((({password, user_id, ...u}) => u)(user.rows[0]))
+    } catch (error) {
+        res.status(500).json(error.message)
+    }
 })
 
 app.get("/", async (req, res)=> {
