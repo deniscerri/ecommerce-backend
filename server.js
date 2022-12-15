@@ -10,6 +10,9 @@ const pgSession = require("connect-pg-simple")(session)
 
 const user = require('./routes/user')
 const auth = require('./routes/auth')
+const order = require('./routes/order')
+const address = require('./routes/address')
+const product = require('./routes/product')
 
 
 const pgPool = new pg.Pool({
@@ -30,6 +33,9 @@ app.use(express.urlencoded({extended: true}))
 app.use(cors())
 app.use('/user', user)
 app.use('/auth', auth)
+app.use('/orders', order)
+app.use('/addresses', address)
+app.use('/products', product)
 
 app.get('/', (req, res)=>{
     res.json("Hi")

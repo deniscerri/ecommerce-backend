@@ -6,4 +6,5 @@ CREATE TABLE "users" (
   "password" varchar(100) NOT NULL,
   "gender" boolean,
   "birthday" date
+  "type" varchar(30) DEFAULT "user"
 );
