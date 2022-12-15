@@ -1,0 +1,43 @@
+@baseURL = http://localhost:{{$dotenv PORT}}
+
+### LOGIN
+POST {{baseURL}}/auth/login
+Content-Type: application/x-www-form-urlencoded
+Accept: text/plain
+
+email=denis@gmail.com
+&password=test2
+
+### REGISTER
+POST {{baseURL}}/auth/register
+Content-Type: application/x-www-form-urlencoded
+Accept: text/plain
+
+name=denis
+&surname=cerri
+&email=denis@gmail.com
+&password=test
+
+### LOGOUT
+POST {{baseURL}}/auth/logout
+
+### GET USER INFO
+GET {{baseURL}}/user/info
+
+### UPDATE USER INFO
+PATCH {{baseURL}}/user/updateinfo
+Content-Type: application/x-www-form-urlencoded
+Accept: text/plain
+
+name=denis
+&surname=cerri
+&email=denis@gmail.com
+&gender=Male
+&birthday=2000-05-17
+
+### UPDATE PASSWORD
+PATCH {{baseURL}}/user/updatepassword
+Content-Type: application/x-www-form-urlencoded
+Accept: text/plain
+
+password=test2

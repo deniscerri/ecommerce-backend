@@ -3,3 +3,8 @@
 ## ECommerce BE
 
 Will manage the relations in a product store.
+
+### Dev Enviroment
+```npm run dev```
+
+Install REST Client on VSCode to test requests.rest
