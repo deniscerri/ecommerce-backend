@@ -70,7 +70,7 @@ Content-Type: application/json
 }
 
 ### UPDATE ADDRESS
-PATCH {{baseURL}}/addresses/update/14
+PATCH {{baseURL}}/addresses/update/2
 Content-Type: application/json
 Accept: application/json
 
@@ -98,6 +98,16 @@ Content-Type: application/json
 {
     "address_id": 1,
     "products": [1,2]
+}
+
+### UPDATE ORDER
+PATCH {{baseURL}}/orders/update/1
+Content-Type: application/json
+
+{
+    "address_id": 2,
+    "shipping_date": "2022-12-25",
+    "status": "Accepted"
 }
 
 ### DELETE ORDER

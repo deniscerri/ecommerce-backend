@@ -62,48 +62,43 @@ const createOrder = async (req, res) => {
     }
 }
 
-const updateAddress = async (req, res) => {
+const updateOrder = async (req, res) => {
     try {
-        const address_id = req.params.address_id
+        const order_id = req.params.order_id
         Object.entries(req.body).forEach(el => {
             if(el[1] == null) throw {message: "Impartial Data"}
         });
-        if (address_id == null) throw {message: "No address ID given"}
+        if (order_id == null) throw {message: "No Order ID given"}
 
-        let address = await Address.findOne({where: {address_id: address_id, user_id: req.session.user.user_id}})
-        if (address == null) return res.status(404).send({error : "Address not Found!"})
+        let order = await Order.findOne({where: {order_id: order_id, user_id: req.session.user.user_id}})
+        if (order == null) return res.status(404).send({error : "Order not Found!"})
 
         let info = {
-            address_name: req.body.name,
-            address_surname: req.body.surname,
-            address_email: req.body.email,
-            address_country: req.body.country,
-            address_city: req.body.city,
-            address_line1: req.body.line1,
-            address_line2: req.body.line2,
-            address_phone: req.body.phone
+            address_id: req.body.address_id,
+            order_shipping_date: req.body.shipping_date,
+            order_status: req.body.status
         }
 
-        await Address.update(info, {where: {address_id: address_id}})
+        await Order.update(info, {where: {order_id: order_id}})
         return res.status(200).json({
-            success : "Address updated Successfully"
+            success : "Order updated Successfully"
         })
     } catch (error) {
         res.status(500).json({error : error.message})
     }
 }
 
-const deleteAddress = async (req, res) => {
+const deleteOrder = async (req, res) => {
     try {
-        const address_id = req.params.address_id
-        if (address_id == null ) throw {message: "No address ID given"}
+        const order_id = req.params.order_id
+        if (order_id == null ) throw {message: "No Order ID given"}
         
-        let address = await Address.findOne({where: {address_id: address_id, user_id: req.session.user.user_id}})
-        if (address == null) return res.status(404).send({error : "Address not Found!"})
+        let order = await Order.findOne({where: {order_id: order_id, user_id: req.session.user.user_id}})
+        if (order == null) return res.status(404).send({error : "Order not Found!"})
 
-        await Address.destroy({where: {address_id: address_id}})
+        await Order.destroy({where: {order_id: order_id}})
         return res.status(200).json({
-            success: "Address Deleted Succesfully"
+            success: "Order Deleted Succesfully"
         })
     } catch (error) {
         res.status(500).json({error : error.message})
@@ -113,6 +108,6 @@ const deleteAddress = async (req, res) => {
 module.exports = {
     getUserOrders,
     createOrder,
-    updateAddress,
-    deleteAddress
+    updateOrder,
+    deleteOrder
 }

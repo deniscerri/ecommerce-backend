@@ -30,7 +30,10 @@ db.orders = require('./orderModel')(sequelize, DataTypes)
 db.addresses = require('./addressModel')(sequelize, DataTypes)
 
 //user has many addresses
-db.users.hasMany(db.addresses, {as: 'addresses'})
+db.users.hasMany(db.addresses, {
+    foreignKey: 'user_id',
+    as: 'addresses'
+})
 db.addresses.belongsTo(db.users, {
     foreignKey: 'user_id',
     as: 'user'
@@ -56,12 +59,11 @@ db.products.belongsToMany(db.orders, {
 })
 
 //order has one address
-db.addresses.hasOne(db.orders, {
+db.orders.belongsTo(db.addresses, {
     foreignKey: "address_id"
 })
-db.orders.belongsTo(db.addresses)
 
-db.sequelize.sync({force: true})
+db.sequelize.sync({force: false})
 .then(() => {
     console.log('DB Synced!')
 })
