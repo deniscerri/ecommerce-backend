@@ -29,8 +29,10 @@ app.use(session({
     saveUninitialized: false,
 }))
 
-app.use(express.urlencoded({extended: true}))
 app.use(cors())
+app.use(express.json())
+app.use(express.urlencoded({extended: false}))
+
 app.use('/user', user)
 app.use('/auth', auth)
 app.use('/orders', order)

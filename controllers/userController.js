@@ -1,0 +1,123 @@
+const db = require('../models')
+const User = db.users
+const bcrypt = require("bcryptjs")
+
+const getUserInfo = async (req, res) => {
+    try{
+        let id = req.session.user.user_id
+        let user = await User.findOne({where: {user_id: id}})
+        if(user == null) throw {message : "Error finding user info"}
+        return res.status(200).json((({user_password, user_id, ...u}) => u)(user.dataValues))
+    }catch(err){
+        res.status(500).json({
+            error: err.message
+        })
+    }
+}
+
+const updateUserInfo = async (req, res) => {
+    try{
+        Object.entries(req.body).forEach(el => {
+            if(el[1] == null) throw {message: "Impartial Data"}
+        });
+
+        let id = req.session.user.user_id
+        let user = await User.findOne({where: {user_id: id}})
+        if(user == null) throw {message : "Error finding user info"}
+
+        let info = {
+            user_name: req.body.name,
+            user_surname: req.body.surname,
+            user_email: req.body.email,
+            user_gender: req.body.gender,
+            user_birthday: req.body.birthday
+        }
+        
+        await User.update(info, {where: {user_id: id}})
+        res.status(200).json({
+            success: "User Info Updated"
+        })
+    }catch(err){
+        res.status(500).json({
+            error: err.message
+        })
+    }
+}
+
+const updateUserPassword = async (req, res) => {
+    try{
+        Object.entries(req.body).forEach(el => {
+            if(el[1] == null) throw {message: "Impartial Data"}
+        });
+
+        let id = req.session.user.user_id
+        let user = await User.findOne({where: {user_id: id}})
+        if(user == null) throw {message : "Error finding user info"}
+        
+        const password = await bcrypt.hash(req.body.password, 12)
+
+        let info = { user_password: password }
+
+        user = await User.update(info, {where: {user_id: id}})
+        res.status(200).json({
+            success: "Password Updated"
+        })
+    }catch(err){
+        res.status(500).json({
+            error: err.message
+        })
+    }
+}
+
+// ADMIN OPERATIONS
+
+const getAllUsers = async (req, res) => {
+    try{
+        let users = await User.findAll()
+        if(users == null) throw {message : "Error fetching users"}
+        return res.status(200).json(users)
+    }catch(err){
+        res.status(500).json({
+            error: err.message
+        })
+    }
+}
+
+const createUser = async (req, res) => {
+    try{
+        Object.entries(req.body).forEach(el => {
+            if(el[1] == null) throw {message: "Impartial Data"}
+        });
+
+        let checkExistingUser = await User.findOne({where: {user_email: req.body.email}})
+        if (checkExistingUser != null) return res.status(409).json({error: 'User already Exists with this email'})
+
+        const password = await bcrypt.hash(req.body.password, 12)
+
+        let info = {
+            user_name: req.body.name,
+            user_surname: req.body.surname,
+            user_email: req.body.email,
+            user_password: password,
+            user_type: req.body.type 
+        }
+
+        let user = await User.create(info)
+        return res.status(201).json({
+            success: "User created",
+            user
+        })
+    }catch(err){
+        res.status(500).json({
+            error: err.message
+        })
+    }
+}
+
+module.exports = {
+    getUserInfo,
+    updateUserInfo,
+    updateUserPassword,
+    getAllUsers,
+    createUser
+}

@@ -3,43 +3,10 @@ const express = require("express");
 const app = module.exports = express();
 const server = require('../server')
 const {isAuth, isAuthAdmin} = require('../helpers/isAuth')
+const orderController = require('../controllers/orderController')
 
-app.get('/', isAuth, async (req, res) => {
-    try {
-        const pgPool = server.pgPool
-        let orders
-        let response = await pgPool.query(`Select * from orders where user_id = '${req.session.user.user_id}'`)
-        if (response.rows.length == 0) orders = []
-        orders = response.rows
-        return res.status(200).json(orders)
-    } catch (error) {
-        res.status(500).json({error : error.message})
-    }
-})
-
-app.post('/create', isAuth, async (req, res) => {
-    let {address_id, order_date, shipping_date, status} = req.body
-    if(address_id == null || order_date == null || shipping_date == null || status == null) return res.status(500).json({error : "Impartial Data"})
-    
-    try {
-        const pgPool = server.pgPool
-
-        let user = await pgPool.query(`Select * from users where user_id = ${req.session.user.user_id}`)
-        if (user.rows.length == 0) return res.status(404).send({error : "User not Found!"})
-        user = user.rows[0]
-
-        let address = await pgPool.query(`Select * from addresses where address_id = ${address_id}`)
-        if (address.rows.length == 0) return res.status(404).send({error : "Address not Found!"})
-        
-        await pgPool.query(`Insert into orders (user_id, address_id, order_date, shipping_date, status)` +
-                                              `values (${user.user_id}, ${address_id}, '${order_date}', '${shipping_date}', '${status}')`)
-        return res.status(200).json({
-            success : "Order created Successfully"
-        })
-    } catch (error) {
-        res.status(500).json({error : error.message})
-    }
-})
+app.get('/', isAuth, orderController.getUserOrders)
+app.post('/create', isAuth, orderController.createOrder)
 
 
 app.patch('/update/:order_id', isAuthAdmin, async (req, res) => {

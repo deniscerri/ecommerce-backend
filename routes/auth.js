@@ -3,47 +3,9 @@ const express = require("express")
 const bcrypt = require("bcryptjs")
 const app = module.exports = express();
 const server = require('../server')
+const authController = require('../controllers/authController')
 
 
-app.post('/login', async (req, res) => {
-    var {email, password} = req.body
-    try {
-        const pgPool = server.pgPool
-        let user = await pgPool.query(`Select * from users where email = '${email}'`)
-        if (user.rows.length == 0) return res.status(404).json({error: "User not found"})
-        user = user.rows[0]
-
-        const isPasswordMatch = await bcrypt.compare(password, user.password)
-        if (!isPasswordMatch) return res.status(403).json({error: 'Wrong Password'})
-        req.session.isAuth = true
-        if (user.type == 'admin') req.session.isAdmin = true
-        req.session.user = (({password, ...u}) => u)(user) //remove password from the object
-        return res.status(200).send('Welcome')
-    } catch (error) {
-        res.status(500).json({error : error.message})
-    }
-})
-
-app.post('/logout', async (req, res) => {
-    req.session.destroy((err) => {
-        if (err) return res.status(500).send(err.message)
-        res.status(200).send("Logged Out")
-    })
-})
-
-app.post("/register", async (req, res)=>{
-    var {name, surname, email, password} = req.body
-    if (name == undefined || surname == undefined || email == undefined || password == undefined) return res.status(500).json({error: "Impartial Data"})
-    try {
-        const pgPool = server.pgPool
-        let user = await pgPool.query(`Select * from users where email = '${email}'`)
-        if (user.rows.length > 0) return res.status(409).json({error: 'User already Exists with this email'})
-
-        password = await bcrypt.hash(password, 12)
-        
-        await pgPool.query(`Insert into users (name, surname, email, password) values ('${name}', '${surname}', '${email}', '${password}')`)
-        return res.status(201).json({success: 'User Created'})
-    } catch (error) {
-        res.status(500).json({error : error.message})
-    }
-})
+app.post('/login', authController.login)
+app.post('/logout', authController.logout)
+app.post("/register", authController.register)

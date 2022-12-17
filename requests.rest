@@ -2,21 +2,25 @@
 
 ### LOGIN
 POST {{baseURL}}/auth/login
-Content-Type: application/x-www-form-urlencoded
+Content-Type: application/json
 Accept: application/json
 
-email=denis@gmail.com
-&password=test
+{
+    "email": "denis@gmail.com",
+    "password": "test"
+}
 
 ### REGISTER
 POST {{baseURL}}/auth/register
-Content-Type: application/x-www-form-urlencoded
+Content-Type: application/json
 Accept: application/json
 
-name=denis
-&surname=cerri
-&email=denis@gmail.com
-&password=test
+{
+    "name": "denis",
+    "surname": "cerri",
+    "email": "denis@gmail.com",
+    "password": "test"
+}
 
 ### LOGOUT
 POST {{baseURL}}/auth/logout
@@ -25,67 +29,76 @@ POST {{baseURL}}/auth/logout
 GET {{baseURL}}/user/info
 
 ### UPDATE USER INFO
-PATCH {{baseURL}}/user/updateinfo
-Content-Type: application/x-www-form-urlencoded
+PATCH {{baseURL}}/user/info
+Content-Type: application/json
 Accept: application/json
 
-name=denis
-&surname=cerri
-&email=denis@gmail.com
-&gender=Male
-&birthday=2000-05-17
+{
+    "name": "denis",
+    "surname": "cerri",
+    "email": "denis@gmail.com",
+    "gender": "Male",
+    "birthday": "2000-05-17"
+}
+
 
 ### UPDATE PASSWORD
-PATCH {{baseURL}}/user/updatepassword
-Content-Type: application/x-www-form-urlencoded
+PATCH {{baseURL}}/user/password
+Content-Type: application/json
 Accept: application/json
 
-password=test2
+{
+    "password": "test2"
+}
 
 ### GET ADDRESSES
 GET {{baseURL}}/addresses
 
 ### CREATE ADDRESS
 POST {{baseURL}}/addresses/create
-Content-Type: application/x-www-form-urlencoded
+Content-Type: application/json
 
-name=Denis
-&surname=Çerri
-&email=denis@gmail.com
-&country=Albania
-&city=Elbasan
-&line1=Posta 3001
-&line2=Pallati 1232232
-&phone=+3551111111
+{
+    "name": "Denis",
+    "surname": "Çerri",
+    "email": "denis@gmail.com",
+    "country": "Albania",
+    "city": "Elbasan",
+    "line1": "Posta 3001",
+    "line2": "Pallati 1212321412",
+    "phone": "+3551111111"
+}
 
 ### UPDATE ADDRESS
-PATCH {{baseURL}}/addresses/update/1
-Content-Type: application/x-www-form-urlencoded
+PATCH {{baseURL}}/addresses/update/14
+Content-Type: application/json
 Accept: application/json
 
-name=denis
-&surname=cerri
-&email=denis@gmail.com
-&country=Albania
-&city=Elbasan
-&line1=Posta 3001
-&line2=Pallati 1232232
-&phone=+355222222
+{
+    "name": "Denis",
+    "surname": "Çerri",
+    "email": "denis@gmail.com",
+    "country": "Albania",
+    "city": "Tirana",
+    "line1": "Posta 3001",
+    "line2": "Pallati 1212321412",
+    "phone": "+3552222222"
+}
 
 ### DELETE ADDRESS
-DELETE {{baseURL}}/addresses/1
+DELETE {{baseURL}}/addresses/13
 
 ### GET ORDERS
 GET {{baseURL}}/orders
 
 ### MAKE ORDER
 POST {{baseURL}}/orders/create
-Content-Type: application/x-www-form-urlencoded
+Content-Type: application/json
 
-address_id=1
-&order_date=2022-12-15
-&shipping_date=2022-12-22
-&status=Processing
+{
+    "address_id": 1,
+    "products": [1,2]
+}
 
 ### DELETE ORDER
 DELETE {{baseURL}}/orders/2
@@ -95,45 +108,52 @@ GET {{baseURL}}/user/all
 
 ### CREATE USER
 POST {{baseURL}}/user/create
-Content-Type: application/x-www-form-urlencoded
+Content-Type: application/json
 
-name=sined
-&surname=irrec
-&email=sined@gmail.com
-&password=test
-&type=admin
+{
+    "name": "sined",
+    "surname": "irrec",
+    "email": "sined@gmail.com",
+    "password": "test",
+    "type": "admin"
+}
+
 
 ### GET NEW PRODUCTS
 GET {{baseURL}}/products/new
 
 ### GET PRODUCTS BY CATEGORY
-GET {{baseURL}}/products/category/phone
+GET {{baseURL}}/products/category/computer
 
 ### GET PRODUCT BY ID
 GET {{baseURL}}/products/1
 
 ### CREATE PRODUCT
 POST {{baseURL}}/products/create
-Content-Type: application/x-www-form-urlencoded
+Content-Type: application/json
 
-name=Iphone
-&description=this is a phone
-&price=750
-&discounted_price=700
-&stock=22
-&category=phone
+{
+    "name": "Iphone",
+    "description": "this is a phone",
+    "price": 750,
+    "discounted_price": 700,
+    "stock": 22,
+    "category": "phone"
+}
 
 ### UPDATE PRODUCT
 PATCH {{baseURL}}/products/1
-Content-Type: application/x-www-form-urlencoded
+Content-Type: application/json
 Accept: application/json
 
-name=GAMING PC
-&description=this is a pc
-&price=850
-&discounted_price=
-&stock=55
-&category=computer
+{
+    "name": "Gaming PC",
+    "description": "this is a pc",
+    "price": 850,
+    "discounted_price": 800,
+    "stock": 69,
+    "category": "computer"
+}
 
 ### DELETE PRODUCT
-DELETE {{baseURL}}/products/1
+DELETE {{baseURL}}/products/2
