@@ -24,10 +24,11 @@ const db = {}
 db.Sequelize = Sequelize
 db.sequelize = sequelize
 
+db.images = require('./imageModel')(sequelize, DataTypes)
 db.products = require('./productModel')(sequelize, DataTypes)
+db.addresses = require('./addressModel')(sequelize, DataTypes)
 db.users = require('./userModel')(sequelize, DataTypes)
 db.orders = require('./orderModel')(sequelize, DataTypes)
-db.addresses = require('./addressModel')(sequelize, DataTypes)
 
 //user has many addresses
 db.users.hasMany(db.addresses, {
@@ -63,12 +64,22 @@ db.orders.belongsTo(db.addresses, {
     foreignKey: "address_id"
 })
 
+//product has many images
+db.products.hasMany(db.images, {
+    foreignKey: 'product_id',
+    as: 'images'
+})
+db.images.belongsTo(db.products, {
+    foreignKey: 'product_id',
+    as: 'product'
+})
+
 db.sequelize.sync({force: false})
 .then(() => {
     console.log('DB Synced!')
 })
 .catch(err => {
-    console.log(err.message)
+    console.log(err)
 })
 
 module.exports = db

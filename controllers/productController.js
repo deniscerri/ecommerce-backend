@@ -1,9 +1,25 @@
 const db = require('../models')
 const Product = db.products
+const Image = db.images
 
 const getNewProducts = async (req, res) => {
     try {
-        let products = await Product.findAll({limit: 50, order: [['updatedAt', 'DESC']]})
+        let products = await Product.findAll({
+            limit: 50, 
+            order: [['updatedAt', 'DESC']],
+            include: [
+                {
+                    model: Image,
+                    as: 'images',
+                    attributes: ["image_url"]
+                }
+            ]
+        }).then(p => {
+            p.forEach(product => {
+                product.dataValues.images.map(i => i.dataValues = i.dataValues.image_url)
+            })
+            return p
+        })
         if (products == null) products = []
         return res.status(200).json(products)
     } catch (error) {
@@ -16,7 +32,22 @@ const getProductsByCategory = async (req, res) => {
         const category = req.params.category
         if (category == null) throw {message: "Category not given"}
 
-        let products = await Product.findAll({where: {product_category: category}, order: [['updatedAt', 'DESC']]})
+        let products = await Product.findAll({
+            where: {product_category: category}, 
+            order: [['updatedAt', 'DESC']],
+            include: [
+                {
+                    model: Image,
+                    as: 'images',
+                    attributes: ["image_url"]
+                }
+            ]
+        }).then(p => {
+            p.forEach(product => {
+                product.dataValues.images.map(i => i.dataValues = i.dataValues.image_url)
+            })
+            return p
+        })
         if (products == null) products = []
         return res.status(200).json(products)
     } catch (error) {
@@ -30,7 +61,21 @@ const getProductById = async (req, res) => {
         const product_id = req.params.product_id
         if (product_id == null) throw {message: "Product ID not given"}
 
-        let product = await Product.findOne({where: {product_id: product_id}})
+        let product = await Product.findOne({
+            where: {product_id: product_id},
+            include: [
+                {
+                    model: Image,
+                    as: 'images',
+                    attributes: ["image_url"]
+                }
+            ]
+        }).then(p => {
+            p.forEach(product => {
+                product.dataValues.images.map(i => i.dataValues = i.dataValues.image_url)
+            })
+            return p
+        })
         if (product == null) return res.status(404).json({
             error: "Product not found"
         })
@@ -57,9 +102,13 @@ const createProduct = async (req, res) => {
         }
         
         let product = await Product.create(info)
+        let images = req.body.images
+        //add images
+        images.forEach(async i => {
+            await Image.create({product_id: product.product_id, image_url: i})
+        });
         return res.status(201).json({
-            success: "Product created",
-            product
+            success: "Product created"
         })
     }catch(err){
         res.status(500).json({
@@ -89,6 +138,13 @@ const updateProduct = async (req, res) => {
         }
 
         await Product.update(info, {where: {product_id: product_id}})
+        let images = req.body.images
+        //delete old images
+        await Image.destroy({where: {product_id: product.product_id}})
+        //add images
+        images.forEach(async i => {
+            await Image.create({product_id: product.product_id, image_url: i})
+        });
         return res.status(200).json({
             success : "Product updated Successfully"
         })

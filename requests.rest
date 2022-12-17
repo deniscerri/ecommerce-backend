@@ -86,7 +86,7 @@ Accept: application/json
 }
 
 ### DELETE ADDRESS
-DELETE {{baseURL}}/addresses/13
+DELETE {{baseURL}}/addresses/1
 
 ### GET ORDERS
 GET {{baseURL}}/orders
@@ -111,7 +111,7 @@ Content-Type: application/json
 }
 
 ### DELETE ORDER
-DELETE {{baseURL}}/orders/2
+DELETE {{baseURL}}/orders/1
 
 ### GET ALL USERS
 GET {{baseURL}}/user/all
@@ -148,11 +148,16 @@ Content-Type: application/json
     "price": 750,
     "discounted_price": 700,
     "stock": 22,
-    "category": "phone"
+    "category": "phone",
+    "images": [
+        "https://3vfejzo.shop/wp-content/uploads/2022/10/Apple-iPhone-14-Pro-iPhone-14-Pro-Max-silver-220907_inline.jpg.large_.jpeg",
+        "https://www.apple.com/v/iphone-14-pro/c/images/meta/iphone-14-pro_overview__e414c54gtu6a_og.png",
+        "https://www.redline.al/wp-content/uploads/2022/09/Apple-iPhone-14-Pro-iPhone-14-Pro-Max-deep-purple-220907_inline.jpg.large_.jpg"
+    ]
 }
 
 ### UPDATE PRODUCT
-PATCH {{baseURL}}/products/1
+PATCH {{baseURL}}/products/3
 Content-Type: application/json
 Accept: application/json
 
@@ -162,8 +167,13 @@ Accept: application/json
     "price": 850,
     "discounted_price": 800,
     "stock": 69,
-    "category": "computer"
+    "category": "computer",
+    "images": [
+        "https://m.media-amazon.com/images/I/819XYUimTuL.jpg",
+        "https://m.media-amazon.com/images/I/91LSF1iZUFL.jpg",
+        "https://m.media-amazon.com/images/I/81gqqKQVkAL.jpg"
+    ]
 }
 
 ### DELETE PRODUCT
-DELETE {{baseURL}}/products/2
+DELETE {{baseURL}}/products/3
