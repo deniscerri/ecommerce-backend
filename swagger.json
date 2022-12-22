@@ -1,0 +1,804 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Ecommerce REST API",
+    "description": ""
+  },
+  "host": "localhost:4444",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "tags": [
+    {
+      "name": "Authentication"
+    },
+    {
+      "name": "User"
+    },
+    {
+      "name": "Address"
+    },
+    {
+      "name": "Order"
+    },
+    {
+      "name": "Product"
+    }
+  ],
+  "paths": {
+    "/addresses/": {
+      "get": {
+        "tags": ["Address"],
+        "description": "",
+        "parameters": [
+          {"name": "page", "in": "query"},
+          {"name": "size", "in": "query"}
+        ],
+        "responses": {
+          
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/addresses/create": {
+      "post": {
+        "tags": ["Address"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "Denis"
+                },
+                "surname": {
+                  "example": "Cerri"
+                },
+                "email": {
+                  "example": "denis@gmail.com"
+                },
+                "country": {
+                  "example": "Albania"
+                },
+                "city": {
+                  "example": "Elbasan"
+                },
+                "line1": {
+                  "example": "Posta 3001"
+                },
+                "line2":{
+                  "example": "Pallati 1212321412"
+                },
+                "phone": {
+                  "example": "+3551111111"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/addresses/update/{address_id}": {
+      "patch": {
+        "tags": ["Address"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "address_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "Denis"
+                },
+                "surname": {
+                  "example": "Cerri"
+                },
+                "email": {
+                  "example": "denis@gmail.com"
+                },
+                "country": {
+                  "example": "Albania"
+                },
+                "city": {
+                  "example": "Tirana"
+                },
+                "line1": {
+                  "example": "Posta 3001"
+                },
+                "line2": {
+                  "example": "Pallati 121232141"
+                },
+                "phone": {
+                  "example": "+3552222222"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/addresses/{address_id}": {
+      "delete": {
+        "tags": ["Address"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "address_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "denis@gmail.com"
+                },
+                "password": {
+                  "example": "test"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": ["Authentication"],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": ["Authentication"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "denis"
+                },
+                "surname": {
+                  "example": "cerri"
+                },
+                "email": {
+                  "example": "denis@gmail.com"
+                },
+                "password": {
+                  "example": "test"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/orders/": {
+      "get": {
+        "tags": ["Order"],
+        "description": "",
+        "parameters": [
+          {"name": "page", "in": "query"},
+          {"name": "size", "in": "query"}
+        ],
+        "responses": {
+          
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/orders/create": {
+      "post": {
+        "tags": ["Order"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "address_id": {
+                  "example": "1"
+                },
+                "products": {
+                  "example": "[1,2]"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/orders/update/{order_id}": {
+      "patch": {
+        "tags": ["Order"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "type": "int"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "address_id": {
+                  "example": "1"
+                },
+                "shipping_date": {
+                  "example": "2022-12-12"
+                },
+                "status": {
+                  "example": "Processing"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/orders/{order_id}": {
+      "delete": {
+        "tags": ["Order"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/products/": {
+      "get": {
+        "tags": ["Product"],
+        "description": "Get all products by last updated",
+        "parameters": [
+          {"name": "page", "in": "query"},
+          {"name": "size", "in": "query"}
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/products/create": {
+      "post": {
+        "tags": ["Product"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "Iphone"
+                },
+                "description": {
+                  "example": "this is a phone"
+                },
+                "price": {
+                  "example": "750"
+                },
+                "discounted_price": {
+                  "example": "700"
+                },
+                "stock": {
+                  "example": "22"
+                },
+                "category": {
+                  "example": "phone"
+                },
+                "images": {
+                  "example": [
+                    "https://3vfejzo.shop/wp-content/uploads/2022/10/Apple-iPhone-14-Pro-iPhone-14-Pro-Max-silver-220907_inline.jpg.large_.jpeg",
+                    "https://www.apple.com/v/iphone-14-pro/c/images/meta/iphone-14-pro_overview__e414c54gtu6a_og.png",
+                    "https://www.redline.al/wp-content/uploads/2022/09/Apple-iPhone-14-Pro-iPhone-14-Pro-Max-deep-purple-220907_inline.jpg.large_.jpg"
+                ]
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/products/category/{category}": {
+      "get": {
+        "tags": ["Product"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {"name": "page", "in": "query"},
+          {"name": "size", "in": "query"}
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/products/{product_id}": {
+      "get": {
+        "tags": ["Product"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Product"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "Gaming PC"
+                },
+                "description": {
+                  "example": "this is a pc"
+                },
+                "price": {
+                  "example": "850"
+                },
+                "discounted_price": {
+                  "example": "800"
+                },
+                "stock": {
+                  "example": "69"
+                },
+                "category": {
+                  "example": "computer"
+                },
+                "images": {
+                  "example": [
+                    "https://3vfejzo.shop/wp-content/uploads/2022/10/Apple-iPhone-14-Pro-iPhone-14-Pro-Max-silver-220907_inline.jpg.large_.jpeg",
+                    "https://www.apple.com/v/iphone-14-pro/c/images/meta/iphone-14-pro_overview__e414c54gtu6a_og.png",
+                    "https://www.redline.al/wp-content/uploads/2022/09/Apple-iPhone-14-Pro-iPhone-14-Pro-Max-deep-purple-220907_inline.jpg.large_.jpg"
+                ]
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Product"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/user/info": {
+      "get": {
+        "tags": ["User"],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "patch": {
+        "tags": ["User"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "denis"
+                },
+                "surname": {
+                  "example": "cerri"
+                },
+                "email": {
+                  "example": "denis@gmail.com"
+                },
+                "gender": {
+                  "example": "Male"
+                },
+                "birthday": {
+                  "example": "2000-05-17"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/user/password": {
+      "patch": {
+        "tags": ["User"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "password": {
+                  "example": "test2"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/user/all": {
+      "get": {
+        "tags": ["User"],
+        "description": "",
+        "parameters": [
+          {"name": "page", "in": "query"},
+          {"name": "size", "in": "query"}
+        ],
+        "responses": {
+          "200": {
+            
+            "description": "OK"
+          },
+          "403": {
+            
+            "description": "Forbidden"
+          },
+          "500": {
+            
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/user/create": {
+      "post": {
+        "tags": ["User"],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "Denis"
+                },
+                "surname": {
+                  "example": "Cerri"
+                },
+                "email": {
+                  "example": "denis@gmail.com"
+                },
+                "password": {
+                  "example": "Password#1"
+                },
+                "type": {
+                  "example": "admin"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  }
+}

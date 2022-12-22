@@ -5,7 +5,7 @@ const server = require('../server')
 const {isAuth, isAuthAdmin} = require('../helpers/isAuth')
 const productController = require('../controllers/productController')
 
-app.get('/new', isAuth, productController.getNewProducts)
+app.get('/', isAuth, productController.getProducts)
 app.get('/category/:category', isAuth, productController.getProductsByCategory)
 app.get('/:product_id', isAuth, productController.getProductById)
 app.post('/create', isAuthAdmin, productController.createProduct)

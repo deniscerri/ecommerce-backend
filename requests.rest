@@ -129,11 +129,11 @@ Content-Type: application/json
 }
 
 
-### GET NEW PRODUCTS
-GET {{baseURL}}/products/new
+### GET PRODUCTS
+GET {{baseURL}}/products?page=1&size=5
 
 ### GET PRODUCTS BY CATEGORY
-GET {{baseURL}}/products/category/computer
+GET {{baseURL}}/products/category/phone?page=3&size=5
 
 ### GET PRODUCT BY ID
 GET {{baseURL}}/products/1

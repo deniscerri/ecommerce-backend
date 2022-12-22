@@ -1,6 +1,8 @@
 const db = require('../models')
 const User = db.users
 const bcrypt = require("bcryptjs")
+const {getPagination, getPagingData} = require("../helpers/pagination")
+
 
 const getUserInfo = async (req, res) => {
     try{
@@ -73,8 +75,21 @@ const updateUserPassword = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
     try{
-        let users = await User.findAll()
+        const {page, size} = req.query
+        let {limit, offset} = getPagination(page, size)
+        let users = await User.findAndCountAll({
+            order: [['updatedAt', 'DESC']],
+            limit,
+            offset
+        }).then(u => {
+            const data = getPagingData(u, page, limit)
+            return data
+        })
         if(users == null) throw {message : "Error fetching users"}
+        if(users.currentPage > users.totalPages) 
+            return res.status(404).json({
+                error: `Page Index Out of Bounds. Page Nr Provided: ${users.currentPage}, Total Pages: ${users.totalPages}`
+            })
         return res.status(200).json(users)
     }catch(err){
         res.status(500).json({

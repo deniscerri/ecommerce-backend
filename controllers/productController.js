@@ -1,26 +1,36 @@
 const db = require('../models')
 const Product = db.products
 const Image = db.images
+const {getPagination, getPagingData} = require("../helpers/pagination")
 
-const getNewProducts = async (req, res) => {
+const getProducts = async (req, res) => {
     try {
-        let products = await Product.findAll({
-            limit: 50, 
+        const {page, size} = req.query
+        let {limit, offset} = getPagination(page, size)
+        let products = await Product.findAndCountAll({
             order: [['updatedAt', 'DESC']],
+            limit,
+            offset,
             include: [
                 {
                     model: Image,
                     as: 'images',
                     attributes: ["image_url"]
                 }
-            ]
+            ],
+            distinct: true
         }).then(p => {
-            p.forEach(product => {
+            p.rows.forEach(product => {
                 product.dataValues.images.map(i => i.dataValues = i.dataValues.image_url)
             })
-            return p
+            const data = getPagingData(p, page, limit)
+            return data
         })
         if (products == null) products = []
+        if(products.currentPage > products.totalPages) 
+            return res.status(404).json({
+                error: `Page Index Out of Bounds. Page Nr Provided: ${products.currentPage}, Total Pages: ${products.totalPages}`
+            })
         return res.status(200).json(products)
     } catch (error) {
         res.status(500).json({error : error.message})
@@ -30,10 +40,14 @@ const getNewProducts = async (req, res) => {
 const getProductsByCategory = async (req, res) => {
     try {
         const category = req.params.category
+        const {page, size} = req.query
         if (category == null) throw {message: "Category not given"}
+        let {limit, offset} = getPagination(page, size)
 
-        let products = await Product.findAll({
-            where: {product_category: category}, 
+        let products = await Product.findAndCountAll({
+            where: {product_category: category},
+            limit,
+            offset, 
             order: [['updatedAt', 'DESC']],
             include: [
                 {
@@ -41,14 +55,20 @@ const getProductsByCategory = async (req, res) => {
                     as: 'images',
                     attributes: ["image_url"]
                 }
-            ]
+            ],
+            distinct: true
         }).then(p => {
-            p.forEach(product => {
+            p.rows.forEach(product => {
                 product.dataValues.images.map(i => i.dataValues = i.dataValues.image_url)
             })
-            return p
+            const data = getPagingData(p, page, limit)
+            return data
         })
         if (products == null) products = []
+        if(products.currentPage > products.totalPages) 
+            return res.status(404).json({
+                error: `Page Index Out of Bounds. Page Nr Provided: ${products.currentPage}, Total Pages: ${products.totalPages}`
+            })
         return res.status(200).json(products)
     } catch (error) {
         res.status(500).json({error : error.message})
@@ -171,7 +191,7 @@ const deleteProduct = async (req, res) => {
 }
 
 module.exports = {
-    getNewProducts,
+    getProducts,
     getProductsByCategory,
     getProductById,
     createProduct,

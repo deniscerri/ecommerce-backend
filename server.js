@@ -7,6 +7,8 @@ const port = process.env.PORT || 5000
 const pg = require("pg")
 const session = require("express-session")
 const pgSession = require("connect-pg-simple")(session)
+const swaggerUi = require("swagger-ui-express")
+const swaggerDocument = require("./swagger.json")
 
 const user = require('./routes/user')
 const auth = require('./routes/auth')
@@ -33,15 +35,14 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
+app.use('/', swaggerUi.serve)
+app.get('/', swaggerUi.setup(swaggerDocument))
+
 app.use('/user', user)
 app.use('/auth', auth)
 app.use('/orders', order)
 app.use('/addresses', address)
 app.use('/products', product)
-
-app.get('/', (req, res)=>{
-    res.json("Hi")
-})
 
 exports.pgPool = pgPool
 

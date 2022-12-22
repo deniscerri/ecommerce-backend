@@ -1,10 +1,26 @@
 const db = require('../models')
 const Address = db.addresses
+const {getPagination, getPagingData} = require("../helpers/pagination")
+
 
 const getUserAddresses = async (req, res) => {
     try {
-        let addresses = await Address.findAll({where: {user_id: req.session.user.user_id}})
+        const {page, size} = req.query
+        let {limit, offset} = getPagination(page, size)
+        let addresses = await Address.findAndCountAll({
+            order: [['updatedAt', 'DESC']],
+            limit,
+            offset,
+            where: {user_id: req.session.user.user_id}
+        }).then(a => {
+            const data = getPagingData(a, page, limit)
+            return data
+        })
         if (addresses == null) addresses = []
+        if(addresses.currentPage > addresses.totalPages) 
+            return res.status(404).json({
+                error: `Page Index Out of Bounds. Page Nr Provided: ${addresses.currentPage}, Total Pages: ${addresses.totalPages}`
+            })
         return res.status(200).json(addresses)
     } catch (error) {
         res.status(500).json({error : error.message})
