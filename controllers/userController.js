@@ -1,6 +1,7 @@
 const db = require('../models')
 const User = db.users
 const bcrypt = require("bcryptjs")
+const Op = db.Sequelize.Op
 const {getPagination, getPagingData} = require("../helpers/pagination")
 
 
@@ -75,12 +76,29 @@ const updateUserPassword = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
     try{
-        const {page, size} = req.query
+        let {search_query, page, size, sort_by, order} = req.query
+        if(!sort_by) sort_by = 'updatedAt'
+        if(!order) order = 'DESC'
+
+        let where_clause = {}
+        if(search_query){
+            search_query = `%${search_query}%`
+            where_clause = {
+                [Op.or] : [
+                    { user_name: {[Op.substring]: search_query}}, { user_name: {[Op.iLike]: search_query}},
+                    { user_email: {[Op.substring]: search_query}}, { user_email: {[Op.iLike]: search_query}},
+                    { user_surname: {[Op.substring]: search_query}}, { user_surname: {[Op.iLike]: search_query}},
+                ]
+            }
+        }
+
         let {limit, offset} = getPagination(page, size)
         let users = await User.findAndCountAll({
-            order: [['updatedAt', 'DESC']],
+            order: [[sort_by, order]],
             limit,
-            offset
+            offset,
+            where: where_clause,
+            distinct: true
         }).then(u => {
             const data = getPagingData(u, page, limit)
             return data

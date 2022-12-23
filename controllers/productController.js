@@ -1,14 +1,34 @@
 const db = require('../models')
 const Product = db.products
 const Image = db.images
+const Op = db.Sequelize.Op
 const {getPagination, getPagingData} = require("../helpers/pagination")
 
 const getProducts = async (req, res) => {
     try {
-        const {page, size} = req.query
+        let {search_query, page, size, is_stock, sort_by, order} = req.query
+        
+        if(search_query) search_query = `%${search_query}%`
+        if(!sort_by) sort_by = 'updatedAt'
+        if(!order) order = 'DESC'
+
+        let where_clause = {
+            [Op.or] : [
+                {
+                    product_name: {[Op.substring]: search_query}
+                },
+                {
+                    product_name: {[Op.iLike]: search_query}
+                }
+            ]
+        }
+        if(is_stock){
+            Object.assign(where_clause, {product_stock : {[Op.gt]: 0}})
+        }
+
         let {limit, offset} = getPagination(page, size)
         let products = await Product.findAndCountAll({
-            order: [['updatedAt', 'DESC']],
+            order: [[sort_by, order]],
             limit,
             offset,
             include: [
@@ -18,6 +38,7 @@ const getProducts = async (req, res) => {
                     attributes: ["image_url"]
                 }
             ],
+            where: where_clause,
             distinct: true
         }).then(p => {
             p.rows.forEach(product => {
@@ -40,15 +61,26 @@ const getProducts = async (req, res) => {
 const getProductsByCategory = async (req, res) => {
     try {
         const category = req.params.category
-        const {page, size} = req.query
+        let {search_query, page, size, is_stock, sort_by, order} = req.query
+        if(search_query) search_query = `%${search_query}%`
+
         if (category == null) throw {message: "Category not given"}
+        if(!sort_by) sort_by = 'updatedAt'
+        if(!order) order = 'DESC'
+        if (is_stock == 'true') is_stock = true
+        else is_stock = false
+
+        let where_clause = {product_category: category}
+        if(is_stock){
+            Object.assign(where_clause, {product_stock : {[Op.gt]: 0}})
+        }
+
         let {limit, offset} = getPagination(page, size)
 
         let products = await Product.findAndCountAll({
-            where: {product_category: category},
+            order: [[sort_by, order]],
             limit,
             offset, 
-            order: [['updatedAt', 'DESC']],
             include: [
                 {
                     model: Image,
@@ -56,6 +88,7 @@ const getProductsByCategory = async (req, res) => {
                     attributes: ["image_url"]
                 }
             ],
+            where: where_clause,
             distinct: true
         }).then(p => {
             p.rows.forEach(product => {

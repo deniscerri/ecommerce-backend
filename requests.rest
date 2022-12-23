@@ -114,7 +114,7 @@ Content-Type: application/json
 DELETE {{baseURL}}/orders/1
 
 ### GET ALL USERS
-GET {{baseURL}}/user/all
+GET {{baseURL}}/user/all?search_query=d&sort_by=user_id&order=ASC&page=3&size=123
 
 ### CREATE USER
 POST {{baseURL}}/user/create
@@ -130,10 +130,10 @@ Content-Type: application/json
 
 
 ### GET PRODUCTS
-GET {{baseURL}}/products?page=1&size=5
+GET {{baseURL}}/products?page=1&size=5&search_query=pc&sort_by=product_id&order=ASC&is_stock=true
 
 ### GET PRODUCTS BY CATEGORY
-GET {{baseURL}}/products/category/phone?page=3&size=5
+GET {{baseURL}}/products/category/phone?page=1&size=5&sort_by=product_id&order=ASC&is_stock=true
 
 ### GET PRODUCT BY ID
 GET {{baseURL}}/products/1
@@ -166,7 +166,7 @@ Accept: application/json
     "description": "this is a pc",
     "price": 850,
     "discounted_price": 800,
-    "stock": 69,
+    "stock": 0,
     "category": "computer",
     "images": [
         "https://m.media-amazon.com/images/I/819XYUimTuL.jpg",

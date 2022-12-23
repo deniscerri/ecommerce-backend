@@ -11,6 +11,7 @@ const getUserOrders = async (req, res) => {
         const {page, size} = req.query
         let {limit, offset} = getPagination(page, size)
         let orders = await Order.findAndCountAll({
+            order: [['order_date', 'DESC']],
             limit,
             offset,
             include: [
@@ -23,7 +24,7 @@ const getUserOrders = async (req, res) => {
                     as: 'address'
                 }
             ],
-            disctinct: true,
+            distinct: true,
             where: {user_id: req.session.user.user_id}
         }).then(o => {
             const data = getPagingData(o, page, limit)
@@ -54,7 +55,7 @@ const createOrder = async (req, res) => {
         let date = new Date()
         let info = {
             order_date: date,
-            order_shipping_date: date.getDate() + 14,
+            order_shipping_date: new Date(+date + 12096e5), // 2 weeks after
             user_id: req.session.user.user_id,
             address_id: address.address_id
         }

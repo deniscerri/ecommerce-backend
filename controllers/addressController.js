@@ -8,10 +8,11 @@ const getUserAddresses = async (req, res) => {
         const {page, size} = req.query
         let {limit, offset} = getPagination(page, size)
         let addresses = await Address.findAndCountAll({
-            order: [['updatedAt', 'DESC']],
+            order: [['createdAt', 'ASC']],
             limit,
             offset,
-            where: {user_id: req.session.user.user_id}
+            where: {user_id: req.session.user.user_id},
+            distinct: true
         }).then(a => {
             const data = getPagingData(a, page, limit)
             return data

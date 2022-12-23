@@ -10,11 +10,8 @@ const getPagingData = (data, page, limit) => {
     const { count: totalItems} = data;
     let currentPage = page ? + page : 1;
     let totalPages = Math.ceil(totalItems / limit);
-
-    if (totalPages == 0 && currentPage == 1){
-      currentPage = 0
-    }
-
+    if (totalPages == 0) currentPage = 0
+    
     return { totalItems, items: data.rows, totalPages, currentPage };
     };
 

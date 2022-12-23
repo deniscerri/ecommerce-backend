@@ -427,8 +427,12 @@
         "tags": ["Product"],
         "description": "Get all products by last updated",
         "parameters": [
+          {"name": "search_query", "in": "query"},
           {"name": "page", "in": "query"},
-          {"name": "size", "in": "query"}
+          {"name": "size", "in": "query"},
+          {"name": "is_stock", "in": "query"},
+          {"name": "sort_by", "in": "query"},
+          {"name": "order", "in": "query", "description": "ASC or DESC"}
         ],
         "responses": {
           "200": {
@@ -511,7 +515,10 @@
             "type": "string"
           },
           {"name": "page", "in": "query"},
-          {"name": "size", "in": "query"}
+          {"name": "size", "in": "query"},
+          {"name": "is_stock", "in": "query"},
+          {"name": "sort_by", "in": "query"},
+          {"name": "order", "in": "query", "description": "ASC or DESC"}
         ],
         "responses": {
           "200": {
@@ -735,8 +742,11 @@
         "tags": ["User"],
         "description": "",
         "parameters": [
+          {"name": "search_query", "in": "query"},
           {"name": "page", "in": "query"},
-          {"name": "size", "in": "query"}
+          {"name": "size", "in": "query"},
+          {"name": "sort_by", "in": "query"},
+          {"name": "order", "in": "query", "description": "ASC or DESC"}
         ],
         "responses": {
           "200": {
